@@ -1,0 +1,12 @@
+{
+    "auto": {
+        "Include": [
+            "Include/StereoRendering/StereoRenderingBus.h"
+        ],
+        "Source": [
+            "Source/StereoRenderingModule.cpp",
+            "Source/StereoRenderingSystemComponent.cpp",
+            "Source/StereoRenderingSystemComponent.h"
+        ]
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "GemFormatVersion": 4,
+    "Uuid": "51e1f27c07564114988a0420ad47a3e4",
+    "Name": "StereoRendering",
+    "DisplayName": "StereoRendering",
+    "Version": "0.1.0",
+    "Summary": "Stereo and Multiview rendering",
+    "Tags": ["VR"],
+    "IconPath": "preview.png",
+    "Modules": [
+        {
+            "Type": "GameModule"
+        }
+    ]
+}
