@@ -1,12 +1,20 @@
 {
+    "none": {
+        "Source": [
+            "Source/StereoRendering_precompiled.cpp",
+            "Source/StereoRendering_precompiled.h"
+        ]
+    },
     "auto": {
         "Include": [
             "Include/StereoRendering/StereoRenderingBus.h"
         ],
         "Source": [
-            "Source/StereoRenderingModule.cpp",
-            "Source/StereoRenderingSystemComponent.cpp",
-            "Source/StereoRenderingSystemComponent.h"
+            "Source/StereoRenderingGem.cpp"
+        ],
+        "Implementation": [
+            "Source/StereoRenderingDevice.h",
+            "Source/StereoRenderingDevice.cpp"
         ]
     }
 }

@@ -2,12 +2,17 @@
 
 def build(bld):
     bld.DefineGem(
+        includes    = [bld.Path('Code/CryEngine/CryCommon'),
+                       bld.Path('Code/CryEngine/CryAction')],
+
         # General
-        disable_pch             = True,
         file_list               = ['stereorendering.waf_files'],
+
+         # OpenVR is defined for windows only.
+        # win_file_list   = ['stereorendering.waf_files'],
         
         # Testing
-        test_all_file_list      = ['stereorendering_tests.waf_files'],
+        # test_all_file_list      = ['stereorendering_tests.waf_files'],
         
         # Add custom build options here
         
