@@ -84,6 +84,13 @@ namespace StereoRendering
 
         AZ::VR::HMDDeviceRequestBus::Handler::BusDisconnect();
         StereoRenderingRequestBus::Handler::BusDisconnect();
+
+		// destroy custom present
+		if (m_stereoRenderingPresent.get() != nullptr)
+		{
+			m_stereoRenderingPresent.reset();
+			m_stereoRenderingPresent = nullptr;
+		}
     }
 
     AZ::VR::HMDInitBus::HMDInitPriority StereoRenderingDevice::GetInitPriority() const
@@ -93,6 +100,7 @@ namespace StereoRendering
 
 	void StereoRenderingDevice::SubmitFrame(const EyeTarget & left, const EyeTarget & right)
 	{
+		LogMessage(">>>> SubmitFrame");
 	}
 
     void StereoRenderingDevice::GetPerEyeCameraInfo(const EStereoEye eye, const float nearPlane, const float farPlane, AZ::VR::PerEyeCameraInfo& cameraInfo)
@@ -131,6 +139,8 @@ namespace StereoRendering
 
     bool StereoRenderingDevice::CreateRenderTargets(void* renderDevice, const TextureDesc& desc, size_t eyeCount, AZ::VR::HMDRenderTarget* renderTargets[])
     {
+		LogMessage(">>>> CreateRenderTargets");
+
 		// Create StereoRenderingPresent
 		if (m_stereoRenderingPresent.get() == nullptr)
 		{
@@ -170,6 +180,10 @@ namespace StereoRendering
     void StereoRenderingDevice::DestroyRenderTarget(AZ::VR::HMDRenderTarget& renderTarget)
     {
         // Note: The textures created in CreateRenderTarget and added to the renderTarget->textuers array are released in the calling function
+		LogMessage("DestroyRenderTarget deviceSwapTextureSet %p", renderTarget.deviceSwapTextureSet);
+
+		SAFE_DELETE_ARRAY(renderTarget.textures);
+		renderTarget.textures = nullptr;
 
 		// destroy custom present
 		if (m_stereoRenderingPresent.get() != nullptr)

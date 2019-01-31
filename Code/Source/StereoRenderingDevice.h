@@ -64,7 +64,7 @@ namespace StereoRendering
         /// HMDDeviceBus overrides /////////////////////////////////////////////
         void GetPerEyeCameraInfo(const EStereoEye eye, const float nearPlane, const float farPlane, AZ::VR::PerEyeCameraInfo& cameraInfo) override;
         bool CreateRenderTargets(void* renderDevice, const TextureDesc& desc, size_t eyeCount, AZ::VR::HMDRenderTarget* renderTargets[]) override;
-        void DestroyRenderTarget(AZ::VR::HMDRenderTarget& renderTarget) override;
+		void DestroyRenderTarget(AZ::VR::HMDRenderTarget& renderTarget) override;
         AZ::VR::TrackingState* GetTrackingState() override;
         
         void OutputHMDInfo() override;
