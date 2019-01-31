@@ -101,27 +101,27 @@ namespace StereoRendering
         {
             if (IConsole* console = system->GetIConsole())
             {
-                if (ICVar* cvar = console->GetCVar("hmd_null_fov"))
+                if (ICVar* cvar = console->GetCVar("stereorendering_fov"))
                 {
                     cameraInfo.fov = cvar->GetFVal();
                 }
 
-                if (ICVar* cvar = console->GetCVar("hmd_null_aspectRatio"))
+                if (ICVar* cvar = console->GetCVar("stereorendering_aspectRatio"))
                 {
                     cameraInfo.aspectRatio = cvar->GetFVal();
                 }
 
-                if (ICVar* cvar = console->GetCVar("hmd_null_frustumPlane_horizontalDistance"))
+                if (ICVar* cvar = console->GetCVar("stereorendering_frustumPlane_horizontalDistance"))
                 {
                     cameraInfo.frustumPlane.horizontalDistance = cvar->GetFVal();
                 }
 
-                if (ICVar* cvar = console->GetCVar("hmd_null_frustumPlane_verticalDistance"))
+                if (ICVar* cvar = console->GetCVar("stereorendering_frustumPlane_verticalDistance"))
                 {
                     cameraInfo.frustumPlane.verticalDistance = cvar->GetFVal();
                 }
 
-                if (ICVar* cvar = console->GetCVar("hmd_null_eyeOffsetX"))
+                if (ICVar* cvar = console->GetCVar("stereorendering_eyeOffsetX"))
                 {
                     cameraInfo.eyeOffset = AZ::Vector3(cvar->GetFVal(), 0.0f, 0.0f);
                 }
@@ -134,8 +134,8 @@ namespace StereoRendering
 		// Create StereoRenderingPresent
 		if (m_stereoRenderingPresent.get() == nullptr)
 		{
-			m_stereoRenderingPresent = AZStd::make_shared<StereoRenderingPresent>();
-			m_stereoRenderingPresent->Init();
+			//m_stereoRenderingPresent = AZStd::make_shared<StereoRenderingPresent>();
+			//m_stereoRenderingPresent->Init();
 		}
 
         for (size_t i = 0; i < eyeCount; ++i)
@@ -195,22 +195,22 @@ namespace StereoRendering
         {
             if (IConsole* console = system->GetIConsole())
             {
-                if (ICVar* cvar = console->GetCVar("hmd_null_renderWidth"))
+                if (ICVar* cvar = console->GetCVar("stereorendering_renderWidth"))
                 {
                     m_deviceInfo.renderWidth = cvar->GetIVal();
                 }
 
-                if (ICVar* cvar = console->GetCVar("hmd_null_renderHeight"))
+                if (ICVar* cvar = console->GetCVar("stereorendering_renderHeight"))
                 {
                     m_deviceInfo.renderHeight = cvar->GetIVal();
                 }
 
-                if (ICVar* cvar = console->GetCVar("hmd_null_fovH"))
+                if (ICVar* cvar = console->GetCVar("stereorendering_fovH"))
                 {
                     m_deviceInfo.fovH = cvar->GetFVal();
                 }
 
-                if (ICVar* cvar = console->GetCVar("hmd_null_fovV"))
+                if (ICVar* cvar = console->GetCVar("stereorendering_fovV"))
                 {
                     m_deviceInfo.fovV = cvar->GetFVal();
                 }

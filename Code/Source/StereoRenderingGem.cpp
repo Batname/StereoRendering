@@ -62,11 +62,25 @@ namespace StereoRendering
 			// Note: Defaults are based on HTC Vive CV1 as of April 6, 2017
 			REGISTER_CVAR(stereorendering_renderWidth, 1512, 0, "The width of the render texture in pixels. Set once on start.");
 			REGISTER_CVAR(stereorendering_renderHeight, 1680, 0, "The height of the render texture in pixels. Set once on start.");
+			REGISTER_CVAR(stereorendering_fovH, 1.84633982f, 0, "The field of view height in radians. Used on start.");
+			REGISTER_CVAR(stereorendering_fovV, 1.94590104f, 0, "The field of view width in radians. Used on start.");
+			REGISTER_CVAR(stereorendering_fov, 1.91986f, 0, "The field of view in radians. Can be updated at runtime.");
+			REGISTER_CVAR(stereorendering_aspectRatio, 0.9f, 0, "Aspect ratio of the null VR implementation.");
+			REGISTER_CVAR(stereorendering_frustumPlane_horizontalDistance, -0.0701720715f, 0, "Frustum plane horizontal distance.");
+			REGISTER_CVAR(stereorendering_frustumPlane_verticalDistance, -0.00206005573f, 0, "Frustum plane vertical distance.");
+			REGISTER_CVAR(stereorendering_eyeOffsetX, -0.0346999988f, 0, "Eye X offset (Horizontal distance).");
 		}
 
 	private:
 		int stereorendering_renderWidth;
 		int stereorendering_renderHeight;
+		float stereorendering_fovH;
+		float stereorendering_fovV;
+		float stereorendering_fov;
+		float stereorendering_aspectRatio;
+		float stereorendering_frustumPlane_horizontalDistance;
+		float stereorendering_frustumPlane_verticalDistance;
+		float stereorendering_eyeOffsetX;
     };
 }
 
