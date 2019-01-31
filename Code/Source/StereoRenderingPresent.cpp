@@ -1,5 +1,6 @@
 #include "StereoRendering_precompiled.h"
 #include <tchar.h>
+#include <sstream>
 
 #include <IConsole.h>
 
@@ -15,13 +16,20 @@ namespace StereoRendering
 
 	StereoRenderingPresent::StereoRenderingPresent()
 		: mhMainWnd(nullptr)
-		, mhAppInst(nullptr)
+		, mhAppInst(GetModuleHandle(NULL))
+		, mMainWndCaption(_T("App"))
+		, bISRunning(false)
 	{
-		mMainWndCaption = _T("App");
 	}
 
 	StereoRenderingPresent::~StereoRenderingPresent()
 	{
+		if (bISRunning)
+		{
+			DestroyWindow(mhMainWnd);
+
+			m_presentThread.join();
+		}
 	}
 
 	void StereoRenderingPresent::Init()
@@ -40,7 +48,14 @@ namespace StereoRendering
 		//	return;
 		//}
 
-		Initialize();
+		if (!bISRunning)
+		{
+			bISRunning = true;
+
+			m_presentThread = std::thread([&] {
+				Initialize();
+			});
+		}
 	}
 
 	bool StereoRenderingPresent::Initialize()
@@ -48,7 +63,29 @@ namespace StereoRendering
 		if (!InitMainWindow())
 			return false;
 
-		return true;
+
+		return Run();
+	}
+
+	int StereoRenderingPresent::Run()
+	{
+		MSG msg = { 0 };
+
+		while (msg.message != WM_QUIT)
+		{
+			// If there are Window messages then process them.
+			if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+			// Otherwise, do animation/game stuff.
+			else
+			{
+			}
+		}
+
+		return (int)msg.wParam;
 	}
 
 	bool StereoRenderingPresent::InitMainWindow()
@@ -63,7 +100,7 @@ namespace StereoRendering
 		wc.hCursor = LoadCursor(0, IDC_ARROW);
 		wc.hbrBackground = 0;
 		wc.lpszMenuName = 0;
-		wc.lpszClassName = _T("Error");
+		wc.lpszClassName = _T("MainWnd");
 
 		if (!RegisterClass(&wc))
 		{
@@ -81,10 +118,18 @@ namespace StereoRendering
 		int height = R.bottom - R.top;
 
 		mhMainWnd = CreateWindow(_T("MainWnd"), mMainWndCaption,
-			WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mhAppInst, 0);
+			WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, GetModuleHandle(NULL), 0);
+
 		if (!mhMainWnd)
 		{
-			MessageBox(0, "CreateWindow Failed.", 0, 0);
+			DWORD dwrd = GetLastError();
+
+			std::ostringstream s;
+			s << "Error UnregisterClass " << dwrd;
+
+			MessageBoxA(NULL, std::string(s.str()).c_str(),
+				"Error", MB_OK | MB_ICONERROR);
+
 			return false;
 		}
 

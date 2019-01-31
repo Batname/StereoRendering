@@ -134,8 +134,8 @@ namespace StereoRendering
 		// Create StereoRenderingPresent
 		if (m_stereoRenderingPresent.get() == nullptr)
 		{
-			//m_stereoRenderingPresent = AZStd::make_shared<StereoRenderingPresent>();
-			//m_stereoRenderingPresent->Init();
+			m_stereoRenderingPresent = AZStd::shared_ptr<StereoRenderingPresent>(new StereoRenderingPresent());
+			m_stereoRenderingPresent->Init();
 		}
 
         for (size_t i = 0; i < eyeCount; ++i)

@@ -1,3 +1,4 @@
+#include <thread>
 
 namespace StereoRendering
 {
@@ -12,6 +13,7 @@ namespace StereoRendering
 
 	private:
 		bool Initialize();
+		int Run();
 
 		/// Init DirectX and win wintod  /////////////////////////////////////////////
 		bool InitMainWindow();
@@ -23,5 +25,9 @@ namespace StereoRendering
 		HWND mhMainWnd; // main window handle
 		LPCSTR mMainWndCaption;
 		HINSTANCE mhAppInst;
+
+	private:
+		bool bISRunning;
+		std::thread m_presentThread;
 	};
 }
