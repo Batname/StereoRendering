@@ -103,7 +103,10 @@ namespace StereoRendering
 
 	void StereoRenderingDevice::SubmitFrame(const EyeTarget & left, const EyeTarget & right)
 	{
-		//LogMessage(">>>> SubmitFrame");
+		LogMessage(">>>> SubmitFrame");
+
+		d3d11DevCon->Draw(1000, 0); // it works
+		//d3d11DevCon->DrawIndexed(300, 0, 0);
 	}
 
     void StereoRenderingDevice::GetPerEyeCameraInfo(const EStereoEye eye, const float nearPlane, const float farPlane, AZ::VR::PerEyeCameraInfo& cameraInfo)
