@@ -16,8 +16,15 @@
 #include <StereoRendering/StereoRenderingBus.h>
 #include "HMDBus.h"
 
+#include <AzCore/std/smart_ptr/shared_ptr.h>
+
+
+
 namespace StereoRendering
 {
+	class StereoRenderingPresent;
+
+
     class StereoRenderingDevice
         : public AZ::VR::HMDDeviceRequestBus::Handler
         , public AZ::VR::HMDInitRequestBus::Handler
@@ -50,6 +57,10 @@ namespace StereoRendering
         AZ::VR::HMDInitBus::HMDInitPriority GetInitPriority() const override;
         ////////////////////////////////////////////////////////////////////////
 
+		/// IHMDDevice overrides ///////////////////////////////////////////////////
+		void SubmitFrame(const EyeTarget& left, const EyeTarget& right) override;
+		//////////////////////////////////////////////////////////////////////////////
+
         /// HMDDeviceBus overrides /////////////////////////////////////////////
         void GetPerEyeCameraInfo(const EStereoEye eye, const float nearPlane, const float farPlane, AZ::VR::PerEyeCameraInfo& cameraInfo) override;
         bool CreateRenderTargets(void* renderDevice, const TextureDesc& desc, size_t eyeCount, AZ::VR::HMDRenderTarget* renderTargets[]) override;
@@ -66,5 +77,10 @@ namespace StereoRendering
         AZ::VR::HMDDeviceInfo m_deviceInfo;
         bool m_initialized = false;
         AZ::VR::TrackingState m_trackingState;
+
+	private:
+		/// Stereo rendering present  /////////////////////////////////////////////
+		AZStd::shared_ptr<StereoRenderingPresent> m_stereoRenderingPresent;
+		////////////////////////////////////////////////////////////////////////
     };
 }

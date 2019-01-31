@@ -16,5 +16,12 @@
             "Source/StereoRenderingDevice.h",
             "Source/StereoRenderingDevice.cpp"
         ]
+        ,
+        "Rendering": [
+            "Source/StereoRenderingPresent.h",
+            "Source/StereoRenderingPresent.cpp",
+            "Source/StereoRenderingUtils.h",
+            "Source/StereoRenderingUtils.cpp"
+        ]
     }
 }

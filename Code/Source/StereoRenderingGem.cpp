@@ -5,6 +5,7 @@
 #include <platform_impl.h>
 #include <IGem.h>
 #include <AzFramework/Metrics/MetricsPlainTextNameRegistration.h>
+#include <FlowSystem/Nodes/FlowBaseNode.h>
 
 #include "StereoRenderingDevice.h"
 
@@ -35,6 +36,37 @@ namespace StereoRendering
 			}
 			EBUS_EVENT(AzFramework::MetricsPlainTextNameRegistrationBus, RegisterForNameSending, typeIds);
         }
+
+		/**
+		 * Add required SystemComponents to the SystemEntity.
+		 */
+		AZ::ComponentTypeList GetRequiredSystemComponents() const override
+		{
+			return AZ::ComponentTypeList{
+				azrtti_typeid<StereoRenderingDevice>(),
+			};
+		}
+
+		void OnSystemEvent(ESystemEvent event, UINT_PTR, UINT_PTR) override
+		{
+			switch (event)
+			{
+			case ESYSTEM_EVENT_FLOW_SYSTEM_REGISTER_EXTERNAL_NODES:
+				RegisterExternalFlowNodes();
+				break;
+			}
+		}
+
+		void OnCrySystemCVarRegistry() override
+		{
+			// Note: Defaults are based on HTC Vive CV1 as of April 6, 2017
+			REGISTER_CVAR(stereorendering_renderWidth, 1512, 0, "The width of the render texture in pixels. Set once on start.");
+			REGISTER_CVAR(stereorendering_renderHeight, 1680, 0, "The height of the render texture in pixels. Set once on start.");
+		}
+
+	private:
+		int stereorendering_renderWidth;
+		int stereorendering_renderHeight;
     };
 }
 

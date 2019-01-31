@@ -9,6 +9,8 @@
 #include "StereoRenderingDevice.h"
 #include <d3d11.h>
 
+#include "StereoRenderingPresent.h"
+
 #define LogMessage(...) CryLogAlways("[HMD][StereoRendering] - " __VA_ARGS__);
 
 static const char* kDeviceName = "StereoRendering";
@@ -89,6 +91,10 @@ namespace StereoRendering
         return HMDInitPriority::kHighest;
     }
 
+	void StereoRenderingDevice::SubmitFrame(const EyeTarget & left, const EyeTarget & right)
+	{
+	}
+
     void StereoRenderingDevice::GetPerEyeCameraInfo(const EStereoEye eye, const float nearPlane, const float farPlane, AZ::VR::PerEyeCameraInfo& cameraInfo)
     {
         if (ISystem* system = GetISystem())
@@ -125,6 +131,13 @@ namespace StereoRendering
 
     bool StereoRenderingDevice::CreateRenderTargets(void* renderDevice, const TextureDesc& desc, size_t eyeCount, AZ::VR::HMDRenderTarget* renderTargets[])
     {
+		// Create StereoRenderingPresent
+		if (m_stereoRenderingPresent.get() == nullptr)
+		{
+			m_stereoRenderingPresent = AZStd::make_shared<StereoRenderingPresent>();
+			m_stereoRenderingPresent->Init();
+		}
+
         for (size_t i = 0; i < eyeCount; ++i)
         {
             ID3D11Device* d3dDevice = static_cast<ID3D11Device*>(renderDevice);
@@ -157,6 +170,13 @@ namespace StereoRendering
     void StereoRenderingDevice::DestroyRenderTarget(AZ::VR::HMDRenderTarget& renderTarget)
     {
         // Note: The textures created in CreateRenderTarget and added to the renderTarget->textuers array are released in the calling function
+
+		// destroy custom present
+		if (m_stereoRenderingPresent.get() != nullptr)
+		{
+			m_stereoRenderingPresent.reset();
+			m_stereoRenderingPresent = nullptr;
+		}
     }
 
     AZ::VR::TrackingState* StereoRenderingDevice::GetTrackingState()
