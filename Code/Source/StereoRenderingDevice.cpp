@@ -22,7 +22,7 @@ namespace StereoRendering
         if (AZ::SerializeContext* serialize = azrtti_cast<AZ::SerializeContext*>(context))
         {
             serialize->Class<StereoRenderingDevice, AZ::Component>()
-                ->Version(0);
+                ->Version(1);
 
             if (AZ::EditContext* ec = serialize->GetEditContext())
             {
@@ -30,7 +30,7 @@ namespace StereoRendering
                     ->ClassElement(AZ::Edit::ClassElements::EditorData, "")
                     ->Attribute(AZ::Edit::Attributes::Category, "VR")
                     ->Attribute(AZ::Edit::Attributes::AppearsInAddComponentMenu, AZ_CRC("System"))
-                    ->Attribute(AZ::Edit::Attributes::AutoExpand, true)
+                    //->Attribute(AZ::Edit::Attributes::AutoExpand, true)
                     ;
             }
         }
@@ -139,12 +139,12 @@ namespace StereoRendering
 
     bool StereoRenderingDevice::CreateRenderTargets(void* renderDevice, const TextureDesc& desc, size_t eyeCount, AZ::VR::HMDRenderTarget* renderTargets[])
     {
-		LogMessage(">>>> CreateRenderTargets");
+		LogMessage(">>>>>>>>>>>>>>>>>>> CreateRenderTargets");
 
 		// Create StereoRenderingPresent
 		if (m_stereoRenderingPresent.get() == nullptr)
 		{
-			m_stereoRenderingPresent = AZStd::shared_ptr<StereoRenderingPresent>(new StereoRenderingPresent());
+			m_stereoRenderingPresent = AZStd::make_shared<StereoRenderingPresent>();
 			m_stereoRenderingPresent->Init();
 		}
 
