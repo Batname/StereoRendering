@@ -18,6 +18,7 @@
 
 #include <AzCore/std/smart_ptr/shared_ptr.h>
 
+#include <d3d11.h>
 
 
 namespace StereoRendering
@@ -44,6 +45,10 @@ namespace StereoRendering
         // StereoRenderingRequestBus interface implementation
         ////////////////////////////////////////////////////////////////////////
 
+		////////////////////////////////////////////////////////////////////////
+		// 
+		////////////////////////////////////////////////////////////////////////
+
         ////////////////////////////////////////////////////////////////////////
         // AZ::Component interface implementation
         void Init() override;
@@ -66,6 +71,7 @@ namespace StereoRendering
         bool CreateRenderTargets(void* renderDevice, const TextureDesc& desc, size_t eyeCount, AZ::VR::HMDRenderTarget* renderTargets[]) override;
 		void DestroyRenderTarget(AZ::VR::HMDRenderTarget& renderTarget) override;
         AZ::VR::TrackingState* GetTrackingState() override;
+		virtual void PrepareFrame() override;
         
         void OutputHMDInfo() override;
         AZ::VR::HMDDeviceInfo* GetDeviceInfo() override;
@@ -82,5 +88,9 @@ namespace StereoRendering
 		/// Stereo rendering present  /////////////////////////////////////////////
 		AZStd::shared_ptr<StereoRenderingPresent> m_stereoRenderingPresent;
 		////////////////////////////////////////////////////////////////////////
+
+	private:
+		ID3D11DeviceContext* d3d11DevCon = nullptr;
+		ID3D11Device* d3dDevice = nullptr;
     };
 }

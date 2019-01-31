@@ -7,7 +7,6 @@
 #include <IConsole.h>
 
 #include "StereoRenderingDevice.h"
-#include <d3d11.h>
 
 #include "StereoRenderingPresent.h"
 
@@ -47,7 +46,7 @@ namespace StereoRendering
         incompatible.push_back(AZ_CRC("StereoRenderingDevice"));
     }
 
-    void StereoRenderingDevice::Init()
+	void StereoRenderingDevice::Init()
     {
     }
 
@@ -59,6 +58,8 @@ namespace StereoRendering
     void StereoRenderingDevice::Deactivate()
     {
         AZ::VR::HMDInitRequestBus::Handler::BusDisconnect();
+
+		LogMessage("StereoRenderingDevice::Deactivate");
     }
 
     bool StereoRenderingDevice::AttemptInit()
@@ -79,6 +80,8 @@ namespace StereoRendering
 
     void StereoRenderingDevice::Shutdown()
     {
+		LogMessage("StereoRenderingDevice::Shutdown");
+
         using namespace AZ::VR;
         VREventBus::Broadcast(&VREvents::OnHMDShutdown);
 
@@ -100,7 +103,7 @@ namespace StereoRendering
 
 	void StereoRenderingDevice::SubmitFrame(const EyeTarget & left, const EyeTarget & right)
 	{
-		LogMessage(">>>> SubmitFrame");
+		//LogMessage(">>>> SubmitFrame");
 	}
 
     void StereoRenderingDevice::GetPerEyeCameraInfo(const EStereoEye eye, const float nearPlane, const float farPlane, AZ::VR::PerEyeCameraInfo& cameraInfo)
@@ -141,6 +144,12 @@ namespace StereoRendering
     {
 		LogMessage(">>>>>>>>>>>>>>>>>>> CreateRenderTargets");
 
+		d3dDevice = static_cast<ID3D11Device*>(renderDevice);
+		d3dDevice->GetImmediateContext(&d3d11DevCon);
+
+		LogMessage(">>>>>>>>>>>>>>>>>>> d3dDevice %p", d3dDevice);
+		LogMessage(">>>>>>>>>>>>>>>>>>> d3d11DevCon %p", d3d11DevCon);
+
 		// Create StereoRenderingPresent
 		if (m_stereoRenderingPresent.get() == nullptr)
 		{
@@ -150,8 +159,6 @@ namespace StereoRendering
 
         for (size_t i = 0; i < eyeCount; ++i)
         {
-            ID3D11Device* d3dDevice = static_cast<ID3D11Device*>(renderDevice);
-
             D3D11_TEXTURE2D_DESC textureDesc;
             textureDesc.Width = desc.width;
             textureDesc.Height = desc.height;
@@ -168,7 +175,8 @@ namespace StereoRendering
             ID3D11Texture2D* texture;
             d3dDevice->CreateTexture2D(&textureDesc, nullptr, &texture);
 
-            renderTargets[i]->deviceSwapTextureSet = nullptr; // this is just for the device internal render, and as we're null we don't need this
+            //renderTargets[i]->deviceSwapTextureSet = texture;
+			renderTargets[i]->deviceSwapTextureSet = texture;
             renderTargets[i]->numTextures = 1;
             renderTargets[i]->textures = new void*[1];
             renderTargets[i]->textures[0] = texture;
@@ -197,6 +205,11 @@ namespace StereoRendering
     {
         return &m_trackingState;
     }
+
+	void StereoRenderingDevice::PrepareFrame()
+	{
+		//LogMessage("StereoRenderingDevice::PrepareFrame");
+	}
 
     void StereoRenderingDevice::OutputHMDInfo()
     {
