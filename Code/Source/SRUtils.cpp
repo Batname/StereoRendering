@@ -1,8 +1,8 @@
-#include "StereoRendering_precompiled.h"
+#include "SR_precompiled.h"
 
-#include "StereoRenderingUtils.h"
+#include "SRUtils.h"
 
-namespace StereoRendering
+namespace SR
 {
 	DxException::DxException(HRESULT hr, const std::wstring& functionName, const std::wstring& filename, int lineNumber) :
     ErrorCode(hr),

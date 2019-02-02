@@ -13,7 +13,7 @@
 
 #include <AzCore/Component/Component.h>
 
-#include <StereoRendering/StereoRenderingBus.h>
+#include <SR/SRBus.h>
 #include "HMDBus.h"
 
 #include <AzCore/std/smart_ptr/shared_ptr.h>
@@ -21,19 +21,19 @@
 #include <d3d11.h>
 
 
-namespace StereoRendering
+namespace SR
 {
-	class StereoRenderingPresent;
+	class SRPresent;
 
 
-    class StereoRenderingDevice
+    class SRDevice
         : public AZ::VR::HMDDeviceRequestBus::Handler
         , public AZ::VR::HMDInitRequestBus::Handler
         , public AZ::Component
-        , protected StereoRenderingRequestBus::Handler
+        , protected SRRequestBus::Handler
     {
     public:
-        AZ_COMPONENT(StereoRenderingDevice, "{1ECE0CC3-23F5-4F8A-AA14-5E6123E736D5}");
+        AZ_COMPONENT(SRDevice, "{1ECE0CC3-23F5-4F8A-AA14-5E6123E736D5}");
 
         static void Reflect(AZ::ReflectContext* context);
 
@@ -42,7 +42,7 @@ namespace StereoRendering
 
     protected:
         ////////////////////////////////////////////////////////////////////////
-        // StereoRenderingRequestBus interface implementation
+        // SRRequestBus interface implementation
         ////////////////////////////////////////////////////////////////////////
 
 		////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ namespace StereoRendering
 
 	private:
 		/// Stereo rendering present  /////////////////////////////////////////////
-		AZStd::shared_ptr<StereoRenderingPresent> m_stereoRenderingPresent;
+		AZStd::shared_ptr<SRPresent> m_SRPresent;
 		////////////////////////////////////////////////////////////////////////
 
 	private:

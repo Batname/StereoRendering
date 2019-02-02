@@ -6,10 +6,10 @@ def build(bld):
                        bld.Path('Code/CryEngine/CryAction')],
 
         # General
-        file_list               = ['stereorendering.waf_files'],
+        file_list               = ['sr.waf_files'],
 
          # OpenVR is defined for windows only.
-        # win_file_list   = ['stereorendering.waf_files'],
+        # win_file_list   = ['sr.waf_files'],
         
         # Testing
         # test_all_file_list      = ['stereorendering_tests.waf_files'],

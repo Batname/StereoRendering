@@ -9,5 +9,20 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 *
 */
+#pragma once
 
-#include "StereoRendering_precompiled.h"
+#include <AzCore/EBus/EBus.h>
+
+namespace SR
+{
+    class SRRequests
+        : public AZ::EBusTraits
+    {
+
+    public:
+        static const AZ::EBusHandlerPolicy HandlerPolicy = AZ::EBusHandlerPolicy::Single;
+        static const AZ::EBusAddressPolicy AddressPolicy = AZ::EBusAddressPolicy::Single;
+        // Public functions
+    };
+    using SRRequestBus = AZ::EBus<SRRequests>;
+} // namespace SR

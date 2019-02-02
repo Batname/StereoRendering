@@ -1,0 +1,27 @@
+{
+    "none": {
+        "Source": [
+            "Source/SR_precompiled.cpp",
+            "Source/SR_precompiled.h"
+        ]
+    },
+    "auto": {
+        "Include": [
+            "Include/SR/SRBus.h"
+        ],
+        "Source": [
+            "Source/SRGem.cpp"
+        ],
+        "Implementation": [
+            "Source/SRDevice.h",
+            "Source/SRDevice.cpp"
+        ]
+        ,
+        "Rendering": [
+            "Source/SRRenderer.h",
+            "Source/SRRenderer.cpp",
+            "Source/SRUtils.h",
+            "Source/SRUtils.cpp"
+        ]
+    }
+}

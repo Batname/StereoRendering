@@ -2,7 +2,7 @@
 
 #include <AzTest/AzTest.h>
 
-class StereoRenderingTest
+class SRTest
     : public ::testing::Test
 {
 protected:
@@ -17,7 +17,7 @@ protected:
     }
 };
 
-TEST_F(StereoRenderingTest, ExampleTest)
+TEST_F(SRTest, ExampleTest)
 {
     ASSERT_TRUE(true);
 }

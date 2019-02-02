@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 
-namespace StereoRendering
+namespace SR
 {
 class DxException
 {
