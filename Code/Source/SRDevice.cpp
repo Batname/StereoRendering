@@ -8,7 +8,7 @@
 
 #include "SRDevice.h"
 
-#include "SRPresent.h"
+#include "SRRenderer.h"
 
 #define LogMessage(...) CryLogAlways("[HMD][SR] - " __VA_ARGS__);
 

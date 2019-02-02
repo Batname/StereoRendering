@@ -55,6 +55,6 @@ namespace SR
 			Sleep(100);
 		}
 
-		return 0
+		return 0;
 	}
 }
