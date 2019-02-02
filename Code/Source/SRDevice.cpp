@@ -87,10 +87,10 @@ namespace SR
         SRRequestBus::Handler::BusDisconnect();
 
 		// destroy custom present
-		if (m_SRPresent.get() != nullptr)
+		if (m_SRRenderer.get() != nullptr)
 		{
-			m_SRPresent.reset();
-			m_SRPresent = nullptr;
+			m_SRRenderer.reset();
+			m_SRRenderer = nullptr;
 		}
     }
 
@@ -146,11 +146,11 @@ namespace SR
 		d3dDevice = static_cast<ID3D11Device*>(renderDevice);
 		d3dDevice->GetImmediateContext(&d3d11DevCon);
 
-		// Create SRPresent
-		if (m_SRPresent.get() == nullptr)
+		// Create SRRenderer
+		if (m_SRRenderer.get() == nullptr)
 		{
-			m_SRPresent = AZStd::make_shared<SRPresent>();
-			m_SRPresent->Init();
+			m_SRRenderer = AZStd::make_shared<SRRenderer>();
+			m_SRRenderer->Init();
 		}
 
         for (size_t i = 0; i < eyeCount; ++i)
@@ -190,10 +190,10 @@ namespace SR
 		renderTarget.textures = nullptr;
 
 		// destroy custom present
-		if (m_SRPresent.get() != nullptr)
+		if (m_SRRenderer.get() != nullptr)
 		{
-			m_SRPresent.reset();
-			m_SRPresent = nullptr;
+			m_SRRenderer.reset();
+			m_SRRenderer = nullptr;
 		}
     }
 

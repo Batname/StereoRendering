@@ -23,7 +23,7 @@
 
 namespace SR
 {
-	class SRPresent;
+	class SRRenderer;
 
 
     class SRDevice
@@ -86,7 +86,7 @@ namespace SR
 
 	private:
 		/// Stereo rendering present  /////////////////////////////////////////////
-		AZStd::shared_ptr<SRPresent> m_SRPresent;
+		AZStd::shared_ptr<SRRenderer> m_SRRenderer;
 		////////////////////////////////////////////////////////////////////////
 
 	private:
