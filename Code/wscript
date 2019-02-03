@@ -1,47 +1,23 @@
 
+# Documentation
+# https://docs.aws.amazon.com/lumberyard/latest/userguide/waf-third-party-library-configurations.html
 
 def build(bld):
     bld.DefineGem(
-        includes    = [bld.Path('Code/CryEngine/CryCommon'),
-                       bld.Path('Code/CryEngine/CryAction')],
+
+        # Compiler Specific
+        win_x64_clang_cxxflags = [
+            # '/W3'
+        ],
+
+        includes    = [
+                        bld.Path('Code/CryEngine/CryCommon'),
+                        bld.Path('Code/CryEngine/CryAction'),
+                        'C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Include'
+                       ],
 
         # General
         file_list               = ['sr.waf_files'],
 
-         # OpenVR is defined for windows only.
-        # win_file_list   = ['sr.waf_files'],
-        
-        # Testing
-        # test_all_file_list      = ['stereorendering_tests.waf_files'],
-        
-        # Add custom build options here
-        
-        # To add an editor module to your gem:
-        #
-        #   1. declare editor module settings here in a field called 'editor'.
-        #
-        # Editor = dict(
-        #    file_list           = ['stereorendering_editor.waf_files'],
-        #    test_all_file_list  = ['stereorendering_editor_tests.waf_files'],
-        #
-        #    and any additional options to override for the editor module, for example, 
-        #    defines             = ["EDITOR_MODULE"],
-        #    
-        # )
-        #
-        #   2. Add the Editor Module to the gem's gem.json modules list in the gem.json file for this gem.
-        #
-        # "Modules": [
-        #        {
-        #            "Type": "GameModule"
-        #        },
-        #        {
-        #            "Name": "Editor",
-        #            "Type": "EditorModule",
-        #            "Extends": "GameModule"
-        #        }
-        #    ]
-        #
-        #   3. Create the corresponding Editor waf_files file lists for the Editor Module in StereoRendering/Code folder
-        #      To match the example from step 1, create stereorendering_editor.waf_files and stereorendering_editor_tests.waf_files
+        win_stlibpath = ['C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x64'],
     )
