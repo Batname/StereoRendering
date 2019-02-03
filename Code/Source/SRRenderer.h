@@ -5,6 +5,7 @@
 #include <d3dx10.h>
 #include <xnamath.h>
 #include <thread>
+#include <string>
 
 
 namespace SR
@@ -21,6 +22,8 @@ namespace SR
 	private:
 		bool Initialize_thread();
 		int Run();
+
+		void MessageLastError(const std::string& Message);
 
 	private:
 		bool bISRunning;
@@ -57,6 +60,8 @@ namespace SR
 			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 		UINT numElements = ARRAYSIZE(layout);
+
+		HRESULT hr;
 
 	private:
 		void CleanUp();

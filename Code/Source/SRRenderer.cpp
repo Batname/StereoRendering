@@ -42,6 +42,14 @@ namespace SR
 
 	void SRRenderer::Init()
 	{
+		if (!InitScene())    //Initialize our scene
+		{
+
+			MessageLastError("Scene Initialization - Failed");
+			return;
+		}
+
+
 		if (!bISRunning)
 		{
 			bISRunning = true;
@@ -66,12 +74,38 @@ namespace SR
 
 		return 0;
 	}
+	void SRRenderer::MessageLastError(const std::string & Message)
+	{
+		DWORD dwrd = GetLastError();
+
+		std::ostringstream s;
+		s << Message.c_str() << dwrd;
+
+		MessageBoxA(NULL, std::string(s.str()).c_str(), "Error", MB_OK | MB_ICONERROR);
+	}
+
 	void SRRenderer::CleanUp()
 	{
+		//Release the COM Objects we created
+		d3d11Device != nullptr &&  d3d11Device->Release();
+		d3d11DevCon != nullptr && d3d11DevCon->Release();
+		squareVertBuffer != nullptr && squareVertBuffer->Release();
+		squareIndexBuffer != nullptr && squareIndexBuffer->Release();
+		VS != nullptr && VS->Release();
+		PS != nullptr && PS->Release();
+		VS_Buffer != nullptr && VS_Buffer->Release();
+		PS_Buffer != nullptr && PS_Buffer->Release();
+		vertLayout != nullptr && vertLayout->Release();
 	}
+
 	bool SRRenderer::InitScene()
 	{
-		return false;
+		hr = D3DX11CompileFromFile(_T("D:/Amazon/1.17.0.0/dev/Cache/StarterGame/pc/startergame/shaders/stereorendering.cfx"), 0, 0, "VS", "vs_4_0", 0, 0, 0, &VS_Buffer, 0, 0);
+		if (FAILED(hr)) {
+			MessageLastError("Error D3DX11CompileFromFile for vertex shader");
+		}
+
+		return true;
 	}
 	void SRRenderer::UpdateScene()
 	{

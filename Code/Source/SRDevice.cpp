@@ -62,6 +62,14 @@ namespace SR
 
     bool SRDevice::AttemptInit()
     {
+		LogMessage("Attempting to initialize SRDevice");
+		// Create SRRenderer
+		if (m_SRRenderer.get() == nullptr)
+		{
+			m_SRRenderer = AZStd::make_shared<SRRenderer>();
+			m_SRRenderer->Init();
+		}
+
         AZ::VR::HMDDeviceRequestBus::Handler::BusConnect();
         SRRequestBus::Handler::BusConnect();
         
@@ -146,13 +154,6 @@ namespace SR
 		d3dDevice = static_cast<ID3D11Device*>(renderDevice);
 		d3dDevice->GetImmediateContext(&d3d11DevCon);
 
-		// Create SRRenderer
-		if (m_SRRenderer.get() == nullptr)
-		{
-			m_SRRenderer = AZStd::make_shared<SRRenderer>();
-			m_SRRenderer->Init();
-		}
-
         for (size_t i = 0; i < eyeCount; ++i)
         {
             D3D11_TEXTURE2D_DESC textureDesc;
@@ -188,13 +189,6 @@ namespace SR
 
 		SAFE_DELETE_ARRAY(renderTarget.textures);
 		renderTarget.textures = nullptr;
-
-		// destroy custom present
-		if (m_SRRenderer.get() != nullptr)
-		{
-			m_SRRenderer.reset();
-			m_SRRenderer = nullptr;
-		}
     }
 
     AZ::VR::TrackingState* SRDevice::GetTrackingState()
