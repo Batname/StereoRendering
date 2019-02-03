@@ -10,6 +10,11 @@ def build(bld):
             '/WX-'
         ],
 
+        win_lib             = [ 'd3d11',
+                                'd3dx11',
+                                'd3dx10'
+                            ],
+
         includes    = [
                         bld.Path('Code/CryEngine/CryCommon'),
                         bld.Path('Code/CryEngine/CryAction'),
