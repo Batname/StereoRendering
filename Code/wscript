@@ -6,8 +6,8 @@ def build(bld):
     bld.DefineGem(
 
         # Compiler Specific
-        win_x64_clang_cxxflags = [
-            # '/W3'
+         win_cxxflags = [
+            '/WX-'
         ],
 
         includes    = [
