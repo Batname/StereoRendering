@@ -7,7 +7,9 @@ def build(bld):
 
         # Compiler Specific
          win_cxxflags = [
-            '/WX-'
+            '/WX-',
+            '/D "_UNICODE"',
+            '/D "UNICODE"'
         ],
 
         win_lib             = [ 'd3d11',

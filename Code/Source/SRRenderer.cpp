@@ -19,6 +19,15 @@ namespace SR
 
 	SRRenderer::SRRenderer()
 		: bISRunning(false)
+		, d3d11Device(nullptr)
+		, d3d11DevCon(nullptr)
+		, squareIndexBuffer(nullptr)
+		, squareVertBuffer(nullptr)
+		, VS(nullptr)
+		, PS(nullptr)
+		, VS_Buffer(nullptr)
+		, PS_Buffer(nullptr)
+		, vertLayout(nullptr)
 	{
 	}
 
@@ -38,12 +47,12 @@ namespace SR
 			bISRunning = true;
 
 			m_presentThread = std::thread([&] {
-				Initialize();
+				Initialize_thread();
 			});
 		}
 	}
 
-	bool SRRenderer::Initialize()
+	bool SRRenderer::Initialize_thread()
 	{
 		return Run();
 	}
@@ -56,5 +65,18 @@ namespace SR
 		}
 
 		return 0;
+	}
+	void SRRenderer::CleanUp()
+	{
+	}
+	bool SRRenderer::InitScene()
+	{
+		return false;
+	}
+	void SRRenderer::UpdateScene()
+	{
+	}
+	void SRRenderer::DrawScene()
+	{
 	}
 }
