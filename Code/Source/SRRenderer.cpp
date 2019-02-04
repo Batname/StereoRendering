@@ -29,6 +29,8 @@ namespace SR
 		, PS_Buffer(nullptr)
 		, vertLayout(nullptr)
 	{
+		fullPathToAssets = gEnv->pFileIO->GetAlias("@assets@");
+		fileBase = AZ::IO::FileIOBase::GetInstance();
 	}
 
 	SRRenderer::~SRRenderer()
@@ -81,6 +83,7 @@ namespace SR
 		std::ostringstream s;
 		s << Message.c_str() << dwrd;
 
+		LogMessage("%s", std::string(s.str()).c_str());
 		MessageBoxA(NULL, std::string(s.str()).c_str(), "Error", MB_OK | MB_ICONERROR);
 	}
 
@@ -100,7 +103,16 @@ namespace SR
 
 	bool SRRenderer::InitScene()
 	{
-		hr = D3DX11CompileFromFile(_T("D:/Amazon/1.17.0.0/dev/Cache/StarterGame/pc/startergame/shaders/stereorendering.cfx"), 0, 0, "VS", "vs_4_0", 0, 0, 0, &VS_Buffer, 0, 0);
+		// Find shader
+		AZStd::string StereoShaderPath = AZStd::string::format("%s\\shaders\\%s", fullPathToAssets.c_str(), "stereorendering.cfx");
+		if (!fileBase->Exists(StereoShaderPath.c_str()))
+		{
+			MessageLastError("stereorendering.cfx not exists");
+
+			return false;
+		}
+
+		hr = D3DX11CompileFromFile(_T(StereoShaderPath.c_str()), 0, 0, "VS", "vs_5_0", 0, 0, 0, &VS_Buffer, 0, 0);
 		if (FAILED(hr)) {
 			MessageLastError("Error D3DX11CompileFromFile for vertex shader");
 		}

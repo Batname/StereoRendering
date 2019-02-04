@@ -64,6 +64,10 @@ namespace SR
 		HRESULT hr;
 
 	private:
+		AZStd::string fullPathToAssets;
+		AZ::IO::FileIOBase* fileBase;
+
+	private:
 		void CleanUp();
 		bool InitScene();
 		void UpdateScene();
