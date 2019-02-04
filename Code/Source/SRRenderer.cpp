@@ -17,7 +17,7 @@
 namespace SR
 {
 
-	SRRenderer::SRRenderer(ID3D11Device* d3d11Dev, ID3D11DeviceContext* d3d11Con)
+	SRRenderer::SRRenderer(ID3D11Device* d3d11Dev, ID3D11DeviceContext* d3d11Con, ID3D11Texture2D* LeftTex, ID3D11Texture2D* RightTex)
 		: bISRunning(false)
 		, d3d11Device(d3d11Dev)
 		, d3d11DevCon(d3d11Con)
@@ -28,6 +28,11 @@ namespace SR
 		, VS_Buffer(nullptr)
 		, PS_Buffer(nullptr)
 		, vertLayout(nullptr)
+		, LeftTexture(LeftTex)
+		, RightTexture(RightTex)
+		, LeftTextureRV(nullptr)
+		, RightTextureRV(nullptr)
+		, TexSamplerState(nullptr)
 	{
 		fullPathToAssets = gEnv->pFileIO->GetAlias("@assets@");
 		fileBase = AZ::IO::FileIOBase::GetInstance();
@@ -92,8 +97,6 @@ namespace SR
 	void SRRenderer::CleanUp()
 	{
 		//Release the COM Objects we created
-		d3d11Device != nullptr &&  d3d11Device->Release();
-		d3d11DevCon != nullptr && d3d11DevCon->Release();
 		squareVertBuffer != nullptr && squareVertBuffer->Release();
 		squareIndexBuffer != nullptr && squareIndexBuffer->Release();
 		VS != nullptr && VS->Release();
@@ -101,6 +104,12 @@ namespace SR
 		VS_Buffer != nullptr && VS_Buffer->Release();
 		PS_Buffer != nullptr && PS_Buffer->Release();
 		vertLayout != nullptr && vertLayout->Release();
+
+		LeftTextureRV != nullptr && LeftTextureRV->Release();
+		RightTextureRV != nullptr && RightTextureRV->Release();
+
+		TexSamplerState != nullptr && TexSamplerState->Release();
+
 	}
 
 	bool SRRenderer::InitScene()
@@ -134,20 +143,21 @@ namespace SR
 		if (FAILED(hr)) {
 			MessageLastError("Error CreateVertexShader pixel shader");
 		}
-
-		//Create the vertex buffer
+		// Square geometry
 		Vertex v[] =
 		{
-			Vertex(-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f),
-			Vertex(-0.5f,  0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f),
-			Vertex(0.5f,  0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f),
-			Vertex(0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f),
+			// left texture
+			{ -1.0f, 1.0f, 0.0f, 0.0f, 0.0f }, // top left 
+			{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f }, // top right
+			{ -1.0f, -1.0f, 0.0f, 0.0f, 1.0f }, // bottom left
+			{ 1.0f, -1.0f, 0.0f, 1.0f, 1.0f },// bottom right
 		};
 
 		DWORD indices[] = {
-			0, 1, 2,
-			0, 2, 3,
+			0,  1,  2,
+			2,  1,  3,
 		};
+
 
 		D3D11_BUFFER_DESC indexBufferDesc;
 		ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
@@ -184,6 +194,53 @@ namespace SR
 		hr = d3d11Device->CreateInputLayout(layout, numElements, VS_Buffer->GetBufferPointer(),
 			VS_Buffer->GetBufferSize(), &vertLayout);
 
+		// Create texture sampler
+			// Describe the Generic Sample State
+		D3D11_SAMPLER_DESC sampDesc;
+		ZeroMemory(&sampDesc, sizeof(sampDesc));
+		sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		sampDesc.MinLOD = 0;
+		sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		//Create the Sample State
+		hr = d3d11Device->CreateSamplerState(&sampDesc, &TexSamplerState);
+		if (FAILED(hr)) {
+			MessageLastError("Error CreateSamplerState");
+		}
+
+		// Create textures for shader
+		{
+			D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
+			memset(&SRVDesc, 0, sizeof(SRVDesc));
+			SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			SRVDesc.Texture2D.MipLevels = 1;
+			SRVDesc.Texture2D.MostDetailedMip = 0;
+			SRVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+			hr = d3d11Device->CreateShaderResourceView(LeftTexture, &SRVDesc, &LeftTextureRV);
+			if (FAILED(hr)) {
+				MessageLastError("Error CreateShaderResourceView LeftTexture");
+			}
+		}
+
+		{
+			D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
+			memset(&SRVDesc, 0, sizeof(SRVDesc));
+			SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			SRVDesc.Texture2D.MipLevels = 1;
+			SRVDesc.Texture2D.MostDetailedMip = 0;
+			SRVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+			hr = d3d11Device->CreateShaderResourceView(RightTexture, &SRVDesc, &RightTextureRV);
+			if (FAILED(hr)) {
+				MessageLastError("Error CreateShaderResourceView RightTexture");
+			}
+		}
+
 		return true;
 	}
 	void SRRenderer::UpdateScene()
@@ -208,6 +265,12 @@ namespace SR
 		//Set the new VS and PS shaders
 		d3d11DevCon->VSSetShader(VS, 0, 0);
 		d3d11DevCon->PSSetShader(PS, 0, 0);
+
+		// Set texture resources
+		d3d11DevCon->PSSetShaderResources(0, 1, &LeftTextureRV);
+		d3d11DevCon->PSSetSamplers(0, 1, &TexSamplerState);
+		d3d11DevCon->PSSetShaderResources(1, 1, &RightTextureRV);
+		d3d11DevCon->PSSetSamplers(1, 1, &TexSamplerState);
 
 		//Draw the triangle
 		d3d11DevCon->DrawIndexed(6, 0, 0);

@@ -13,7 +13,7 @@ namespace SR
     class SRRenderer
     {
     public:
-		SRRenderer(ID3D11Device* d3d11Dev, ID3D11DeviceContext* d3d11Con);
+		SRRenderer(ID3D11Device* d3d11Dev, ID3D11DeviceContext* d3d11Con, ID3D11Texture2D* LeftTex, ID3D11Texture2D* RightTex);
     	~SRRenderer();
 
 	public:
@@ -41,23 +41,31 @@ namespace SR
 		ID3D10Blob* PS_Buffer;
 		ID3D11InputLayout* vertLayout;
 
+		ID3D11Texture2D* LeftTexture;
+		ID3D11Texture2D* RightTexture;
+
+		ID3D11ShaderResourceView* LeftTextureRV;
+		ID3D11ShaderResourceView* RightTextureRV;
+		
+		ID3D11SamplerState* TexSamplerState;
+
 	private:
 		//Vertex Structure and Vertex Layout (Input Layout)//
-		struct Vertex    //Overloaded Vertex Structure
+		struct Vertex	//Overloaded Vertex Structure
 		{
 			Vertex() {}
 			Vertex(float x, float y, float z,
-				float cr, float cg, float cb, float ca)
-				: pos(x, y, z), color(cr, cg, cb, ca) {}
+				float u, float v)
+				: pos(x, y, z), texCoord(u, v) {}
 
 			XMFLOAT3 pos;
-			XMFLOAT4 color;
+			XMFLOAT2 texCoord;
 		};
 
 		D3D11_INPUT_ELEMENT_DESC layout[2] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 		UINT numElements = ARRAYSIZE(layout);
 

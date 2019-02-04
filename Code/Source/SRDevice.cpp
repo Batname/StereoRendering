@@ -155,13 +155,7 @@ namespace SR
 		d3dDevice = static_cast<ID3D11Device*>(renderDevice);
 		d3dDevice->GetImmediateContext(&d3d11DevCon);
 
-		// Create SRRenderer
-		if (m_SRRenderer.get() == nullptr)
-		{
-			m_SRRenderer = AZStd::make_shared<SRRenderer>(d3dDevice, d3d11DevCon);
-			m_SRRenderer->Init();
-		}
-
+		ID3D11Texture2D* textures[2];
         for (size_t i = 0; i < eyeCount; ++i)
         {
             D3D11_TEXTURE2D_DESC textureDesc;
@@ -179,13 +173,20 @@ namespace SR
 
             ID3D11Texture2D* texture;
             d3dDevice->CreateTexture2D(&textureDesc, nullptr, &texture);
+			textures[i] = texture;
 
-            //renderTargets[i]->deviceSwapTextureSet = texture;
 			renderTargets[i]->deviceSwapTextureSet = texture;
             renderTargets[i]->numTextures = 1;
             renderTargets[i]->textures = new void*[1];
             renderTargets[i]->textures[0] = texture;
         }
+
+		// Create SRRenderer
+		if (m_SRRenderer.get() == nullptr)
+		{
+			m_SRRenderer = AZStd::make_shared<SRRenderer>(d3dDevice, d3d11DevCon, textures[0], textures[1]);
+			m_SRRenderer->Init();
+		}
 
         return true;
     }
