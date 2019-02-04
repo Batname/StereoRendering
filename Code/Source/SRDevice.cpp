@@ -105,6 +105,13 @@ namespace SR
 	{
 		LogMessage(">>>> SubmitFrame");
 
+		// Create SRRenderer
+		if (m_SRRenderer.get() != nullptr)
+		{
+			m_SRRenderer->UpdateScene();
+			m_SRRenderer->DrawScene();
+		}
+
 		//d3d11DevCon->Draw(1000, 0); // it works
 		//d3d11DevCon->DrawIndexed(300, 0, 0);
 	}

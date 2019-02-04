@@ -68,8 +68,10 @@ namespace SR
 		AZ::IO::FileIOBase* fileBase;
 
 	private:
-		void CleanUp();
 		bool InitScene();
+
+	public:
+		void CleanUp();
 		void UpdateScene();
 		void DrawScene();
 

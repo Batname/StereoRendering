@@ -163,8 +163,6 @@ namespace SR
 		iinitData.pSysMem = indices;
 		d3d11Device->CreateBuffer(&indexBufferDesc, &iinitData, &squareIndexBuffer);
 
-		d3d11DevCon->IASetIndexBuffer(squareIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -181,17 +179,10 @@ namespace SR
 		vertexBufferData.pSysMem = v;
 		hr = d3d11Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &squareVertBuffer);
 
-		//Set the vertex buffer
-		UINT stride = sizeof(Vertex);
-		UINT offset = 0;
-		d3d11DevCon->IASetVertexBuffers(0, 1, &squareVertBuffer, &stride, &offset);
 
 		//Create the Input Layout
 		hr = d3d11Device->CreateInputLayout(layout, numElements, VS_Buffer->GetBufferPointer(),
 			VS_Buffer->GetBufferSize(), &vertLayout);
-
-		//Set the Input Layout
-		d3d11DevCon->IASetInputLayout(vertLayout);
 
 		return true;
 	}
@@ -200,5 +191,25 @@ namespace SR
 	}
 	void SRRenderer::DrawScene()
 	{
+		//Set the Input Layout
+		d3d11DevCon->IASetInputLayout(vertLayout);
+
+		//Set Primitive Topology
+		d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		//Set the spheres index buffer
+		d3d11DevCon->IASetIndexBuffer(squareIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		//Set the spheres vertex buffer
+		UINT stride = sizeof(Vertex);
+		UINT offset = 0;
+		d3d11DevCon->IASetVertexBuffers(0, 1, &squareVertBuffer, &stride, &offset);
+
+		//Set the new VS and PS shaders
+		d3d11DevCon->VSSetShader(VS, 0, 0);
+		d3d11DevCon->PSSetShader(PS, 0, 0);
+
+		//Draw the triangle
+		d3d11DevCon->DrawIndexed(6, 0, 0);
 	}
 }
