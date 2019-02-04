@@ -13,7 +13,7 @@ namespace SR
     class SRRenderer
     {
     public:
-		SRRenderer(ID3D11Device* d3d11Dev, ID3D11DeviceContext* d3d11Con, ID3D11Texture2D* LeftTex, ID3D11Texture2D* RightTex);
+		SRRenderer(ID3D11Device* d3d11Dev, ID3D11DeviceContext* d3d11Con, ID3D11Texture2D* LeftTex, ID3D11Texture2D* RightTex, uint32 width, uint32 height);
     	~SRRenderer();
 
 	public:
@@ -68,6 +68,19 @@ namespace SR
 			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 		UINT numElements = ARRAYSIZE(layout);
+
+	private:
+		ID3D11Buffer* cbPerObjectBuffer;
+
+		struct cbPerObject
+		{
+			// 3rd Group of 16 bytes
+			int ScreenSize[2] = { 1280, 720 }; // 8 bytes 4 * 2
+			float pad1 = 0.f; // 4 bytes
+			float pad2 = 0.f; // 4 bytes
+		};
+
+		cbPerObject cbPerObj;
 
 		HRESULT hr;
 

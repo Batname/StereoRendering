@@ -184,7 +184,7 @@ namespace SR
 		// Create SRRenderer
 		if (m_SRRenderer.get() == nullptr)
 		{
-			m_SRRenderer = AZStd::make_shared<SRRenderer>(d3dDevice, d3d11DevCon, textures[0], textures[1]);
+			m_SRRenderer = AZStd::make_shared<SRRenderer>(d3dDevice, d3d11DevCon, textures[0], textures[1], desc.width, desc.height);
 			m_SRRenderer->Init();
 		}
 

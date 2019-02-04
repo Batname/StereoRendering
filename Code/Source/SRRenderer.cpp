@@ -17,7 +17,7 @@
 namespace SR
 {
 
-	SRRenderer::SRRenderer(ID3D11Device* d3d11Dev, ID3D11DeviceContext* d3d11Con, ID3D11Texture2D* LeftTex, ID3D11Texture2D* RightTex)
+	SRRenderer::SRRenderer(ID3D11Device* d3d11Dev, ID3D11DeviceContext* d3d11Con, ID3D11Texture2D* LeftTex, ID3D11Texture2D* RightTex, uint32 width, uint32 height)
 		: bISRunning(false)
 		, d3d11Device(d3d11Dev)
 		, d3d11DevCon(d3d11Con)
@@ -33,9 +33,13 @@ namespace SR
 		, LeftTextureRV(nullptr)
 		, RightTextureRV(nullptr)
 		, TexSamplerState(nullptr)
+		, cbPerObjectBuffer(nullptr)
 	{
 		fullPathToAssets = gEnv->pFileIO->GetAlias("@assets@");
 		fileBase = AZ::IO::FileIOBase::GetInstance();
+
+		cbPerObj.ScreenSize[0] = width;
+		cbPerObj.ScreenSize[1] = height;
 	}
 
 	SRRenderer::~SRRenderer()
@@ -110,6 +114,7 @@ namespace SR
 
 		TexSamplerState != nullptr && TexSamplerState->Release();
 
+		cbPerObjectBuffer != nullptr && cbPerObjectBuffer->Release();
 	}
 
 	bool SRRenderer::InitScene()
@@ -241,6 +246,24 @@ namespace SR
 			}
 		}
 
+		// Create constant buffer
+		{
+			D3D11_BUFFER_DESC cbbd;
+			ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
+
+			cbbd.Usage = D3D11_USAGE_DEFAULT;
+			cbbd.ByteWidth = sizeof(cbPerObject);
+			cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			cbbd.CPUAccessFlags = 0;
+			cbbd.MiscFlags = 0;
+
+			hr = d3d11Device->CreateBuffer(&cbbd, NULL, &cbPerObjectBuffer);
+			if (FAILED(hr)) {
+				MessageLastError("Error CreateBuffer");
+			}
+		}
+
+
 		return true;
 	}
 	void SRRenderer::UpdateScene()
@@ -271,6 +294,11 @@ namespace SR
 		d3d11DevCon->PSSetSamplers(0, 1, &TexSamplerState);
 		d3d11DevCon->PSSetShaderResources(1, 1, &RightTextureRV);
 		d3d11DevCon->PSSetSamplers(1, 1, &TexSamplerState);
+
+		// Update constant buffer
+		d3d11DevCon->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
+		d3d11DevCon->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
+		d3d11DevCon->PSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
 
 		//Draw the triangle
 		d3d11DevCon->DrawIndexed(6, 0, 0);

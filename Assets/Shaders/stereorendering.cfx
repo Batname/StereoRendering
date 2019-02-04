@@ -4,6 +4,14 @@ SamplerState LeftTextureSamplerState : register(s0);
 Texture2D RightTexture : register(t1); // Texture from framebuffer
 SamplerState RightTextureSamplerState : register(s1);
 
+cbuffer cbPerObject
+{
+	// 1rd Group of 16 bytes
+	int ScreenSize; // 8 bytes 4 * 2
+	float pad1; // 4 bytes
+	float pad2; // 4 bytes
+};
+
 struct VS_OUTPUT
 {
     float4 Pos : SV_POSITION;
@@ -22,5 +30,13 @@ VS_OUTPUT VS(float4 inPos : POSITION, float2 inTexCoord : TEXCOORD)
 
 float4 PS(VS_OUTPUT input) : SV_TARGET
 {
-    return float4(0.5, 0.5, 0.5, 1);
+    input.TexCoord.x*=2;
+    if (input.Pos.x < ScreenSize.x / 2)
+    {
+    	return LeftTexture.Sample(LeftTextureSamplerState, input.TexCoord);
+    }
+    else
+    {
+    	return RightTexture.Sample(RightTextureSamplerState, input.TexCoord);
+    }
 }
