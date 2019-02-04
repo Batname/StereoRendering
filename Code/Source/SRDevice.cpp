@@ -63,12 +63,6 @@ namespace SR
     bool SRDevice::AttemptInit()
     {
 		LogMessage("Attempting to initialize SRDevice");
-		// Create SRRenderer
-		if (m_SRRenderer.get() == nullptr)
-		{
-			m_SRRenderer = AZStd::make_shared<SRRenderer>();
-			m_SRRenderer->Init();
-		}
 
         AZ::VR::HMDDeviceRequestBus::Handler::BusConnect();
         SRRequestBus::Handler::BusConnect();
@@ -153,6 +147,13 @@ namespace SR
     {
 		d3dDevice = static_cast<ID3D11Device*>(renderDevice);
 		d3dDevice->GetImmediateContext(&d3d11DevCon);
+
+		// Create SRRenderer
+		if (m_SRRenderer.get() == nullptr)
+		{
+			m_SRRenderer = AZStd::make_shared<SRRenderer>(d3dDevice, d3d11DevCon);
+			m_SRRenderer->Init();
+		}
 
         for (size_t i = 0; i < eyeCount; ++i)
         {

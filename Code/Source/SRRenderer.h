@@ -13,7 +13,7 @@ namespace SR
     class SRRenderer
     {
     public:
-		SRRenderer();
+		SRRenderer(ID3D11Device* d3d11Dev, ID3D11DeviceContext* d3d11Con);
     	~SRRenderer();
 
 	public:
