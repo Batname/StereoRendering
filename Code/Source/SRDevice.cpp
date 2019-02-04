@@ -56,14 +56,10 @@ namespace SR
     void SRDevice::Deactivate()
     {
         AZ::VR::HMDInitRequestBus::Handler::BusDisconnect();
-
-		LogMessage("SRDevice::Deactivate");
     }
 
     bool SRDevice::AttemptInit()
     {
-		LogMessage("Attempting to initialize SRDevice");
-
         AZ::VR::HMDDeviceRequestBus::Handler::BusConnect();
         SRRequestBus::Handler::BusConnect();
         
@@ -80,15 +76,13 @@ namespace SR
 
     void SRDevice::Shutdown()
     {
-		LogMessage("SRDevice::Shutdown");
-
         using namespace AZ::VR;
         VREventBus::Broadcast(&VREvents::OnHMDShutdown);
 
         AZ::VR::HMDDeviceRequestBus::Handler::BusDisconnect();
         SRRequestBus::Handler::BusDisconnect();
 
-		// destroy custom present
+		// destroy SRRenderer
 		if (m_SRRenderer.get() != nullptr)
 		{
 			m_SRRenderer.reset();
@@ -103,17 +97,12 @@ namespace SR
 
 	void SRDevice::SubmitFrame(const EyeTarget & left, const EyeTarget & right)
 	{
-		LogMessage(">>>> SubmitFrame");
-
 		// Create SRRenderer
 		if (m_SRRenderer.get() != nullptr)
 		{
 			m_SRRenderer->UpdateScene();
 			m_SRRenderer->DrawScene();
 		}
-
-		//d3d11DevCon->Draw(1000, 0); // it works
-		//d3d11DevCon->DrawIndexed(300, 0, 0);
 	}
 
     void SRDevice::GetPerEyeCameraInfo(const EStereoEye eye, const float nearPlane, const float farPlane, AZ::VR::PerEyeCameraInfo& cameraInfo)
@@ -193,11 +182,14 @@ namespace SR
 
     void SRDevice::DestroyRenderTarget(AZ::VR::HMDRenderTarget& renderTarget)
     {
-        // Note: The textures created in CreateRenderTarget and added to the renderTarget->textuers array are released in the calling function
-		LogMessage("DestroyRenderTarget deviceSwapTextureSet %p", renderTarget.deviceSwapTextureSet);
-
 		SAFE_DELETE_ARRAY(renderTarget.textures);
 		renderTarget.textures = nullptr;
+
+		if (m_SRRenderer.get() != nullptr)
+		{
+			m_SRRenderer.reset();
+			m_SRRenderer = nullptr;
+		}
     }
 
     AZ::VR::TrackingState* SRDevice::GetTrackingState()
@@ -207,12 +199,10 @@ namespace SR
 
 	void SRDevice::PrepareFrame()
 	{
-		//LogMessage("SRDevice::PrepareFrame");
 	}
 
     void SRDevice::OutputHMDInfo()
     {
-        LogMessage("Null Device");
     }
 
     AZ::VR::HMDDeviceInfo* SRDevice::GetDeviceInfo()

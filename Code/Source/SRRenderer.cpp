@@ -12,8 +12,6 @@
 
 #define LogMessage(...) CryLogAlways("[HMD][SRRenderer] - " __VA_ARGS__);
 
-// _T("App")
-
 namespace SR
 {
 
@@ -200,7 +198,6 @@ namespace SR
 			VS_Buffer->GetBufferSize(), &vertLayout);
 
 		// Create texture sampler
-			// Describe the Generic Sample State
 		D3D11_SAMPLER_DESC sampDesc;
 		ZeroMemory(&sampDesc, sizeof(sampDesc));
 		sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -263,12 +260,13 @@ namespace SR
 			}
 		}
 
-
 		return true;
 	}
+
 	void SRRenderer::UpdateScene()
 	{
 	}
+
 	void SRRenderer::DrawScene()
 	{
 		//Set the Input Layout
